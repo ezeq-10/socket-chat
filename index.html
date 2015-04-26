@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Node.js & Socket.io chat</title>
+
+  <!-- Bootstrap from CDN -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+  
+
+  <style>
+    #chat {
+      height: 500px;
+    }
+  </style>    
+  
+</head>
+
+<body class="container">
+
+  <div id="chat"></div>
+  <form id="message-form">
+    <input id="message-box"></input>
+    <input type="submit"></input>
+  </form>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>  
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    jQuery(function($) {
+
+      var socket = io.connect();
+
+      var $chat = $('#chat');
+      var $messageForm = $('#message-form');
+      var $messageBox = $('#message-box');
+            
+      $messageForm.submit(function(e) {        
+        e.preventDefault();
+
+        var message = $messageBox.val();
+
+        // send message event
+        socket.emit('send message', {'message': message});
+        $messageBox.val('');        
+      });
+
+
+      // new message event
+      socket.on('new message', function(data) {
+        $chat.append(data + '<br />');
+      });
+
+    });
+  </script>
+<body>
+</html>
